@@ -1,0 +1,15 @@
+1. flow
+2. classes
+    2a class relationships
+
+-user is asked for ingredients
+-user sees available recipes (wish list, shows recipes within +/- 1 ingredient from the list)
+-user selects recipe
+-user sees instructions
+
+Classes
+- Drink/Recipe
+  knows about drinks, stores them
+- Ingredient
+- CLI
+- Scraper
