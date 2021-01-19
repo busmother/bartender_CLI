@@ -16,6 +16,12 @@ class Bartender::CLI
         puts ">> I'm checking out all of the possible recipes and ingredients, so just give me a sec.".colorize(:yellow)
     end
 
+    def find_recipes
+        recipe_scraper = Scraper.new("https://makemeacocktail.com/recipes/IBA+Official+Drink-cocktails/")
+        recipe_hash = recipe_scraper.create_recipes_hash
+        Scraper.create_recipes(recipe_hash)
+    end
+
     def random_question
         question_array = [" What about", " Any", " Do you have", "", " How about"]
         question_array[(rand()*4).floor]
@@ -23,19 +29,11 @@ class Bartender::CLI
 
     def menu
         check_ingredient
-        puts ">> Here's what's in your cart:"
         list_ingredients_in_cart
-        #update ingredient method ~*~*~*
         Recipe.match_recipes
         share_recipes_greeting
         share_recipes
-        different_recipe
-    end
-
-    def find_recipes 
-        recipe_scraper = Scraper.new("https://makemeacocktail.com/recipes/IBA+Official+Drink-cocktails/")
-        recipe_hash = recipe_scraper.create_recipes_hash
-        Scraper.create_recipes(recipe_hash)
+        #different_recipe
     end
 
     def all_ingredients_sorted
@@ -44,12 +42,10 @@ class Bartender::CLI
     end
 
     def invalid_input
-        puts 
-        ">> Sorry, my responses are limited. 
-        You must enter an input that matches one of your options.".colorize(:red)
+        puts ">> Sorry, my responses are limited. You must enter an input that matches one of your options.".colorize(:red)
     end
 
-    def check_ingredient 
+    def check_ingredient
         all_ingredients_sorted.each do |ingredient|
             puts ">>#{random_question} #{ingredient.name}? enter 'y' if yes or 'n' if no."
             while true
@@ -70,7 +66,6 @@ class Bartender::CLI
         end
     end
 
-
     def ingredients_in_cart
         cart = []
         Ingredient.all.each do|ingredient| 
@@ -82,6 +77,7 @@ class Bartender::CLI
     end
 
     def list_ingredients_in_cart
+        puts ">> Here's what's in your cart:"
         ingredients_in_cart.each_with_index {|ingredient, i| puts ">>#{i+1}. #{ingredient.name}".colorize(:green)}
     end
 
@@ -105,9 +101,10 @@ class Bartender::CLI
         if recipe_counter > 1
             print_recipes
             choose_recipe
+            different_recipe
         elsif recipe_counter == 1
             stocked_recipes = Recipe.stocked_recipes
-            recipe = stocked_recipes[input]
+            recipe = stocked_recipes[0]
             puts "#{recipe.instructions}"
         end
     end
@@ -128,10 +125,10 @@ class Bartender::CLI
         stocked_recipes = Recipe.stocked_recipes
         while true
             input = nil
-            input = gets.chomp.to_i - 1
-            binding.pry
-            if input.between?(0,stocked_recipes.length)
-                recipe = stocked_recipes[input]
+            input = gets.chomp.to_i
+            upper_limit = stocked_recipes.length 
+            if input.between?(1,upper_limit)
+                recipe = stocked_recipes[input-1]
                 puts "#{recipe.instructions}"
                 break
             else
@@ -143,12 +140,13 @@ class Bartender::CLI
     def different_recipe
         puts ">> Do you want to check out a different recipe? Enter 'y' for yes and 'n' for no"
         while true
-            input = gets.strip.downcase
+            input = nil
+            input = gets.strip.downcase 
             if input == "y" || input == "n"
-                if input ==  "y"
+                if input == "y"
                     share_recipes
-                elseif "n"
-                goodbye
+                elsif input == "n"
+                    goodbye
                 end
                 break
             else

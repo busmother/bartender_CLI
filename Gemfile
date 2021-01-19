@@ -1,9 +1,9 @@
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in bartender.gemspec
 gemspec
 
 gem "rake", "~> 12.0"
+gem 'pry'
 
 #require require all
 #require nokogiri

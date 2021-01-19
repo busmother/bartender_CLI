@@ -1,5 +1,4 @@
 class Ingredient
-    # extend Concerns::Findable
     attr_reader :name
     attr_accessor :cart
 
@@ -40,7 +39,4 @@ class Ingredient
         @cart
     end
 
-    def self.clear_all
-        @@all = []
-    end
 end

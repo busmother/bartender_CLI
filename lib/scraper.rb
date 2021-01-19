@@ -9,13 +9,11 @@ class Scraper
     @site = site
   end
 
-  def site
-    @site
-  end
+
 
   def create_recipes_hash
     page = Nokogiri::HTML(open(@site))
-    results = page.css(".item_info").css("a") #this targets links
+    results = page.css(".item_info").css("a")
     recipe_keys_array = []
     recipe_values_array = []
     results.each {|recipe| recipe_keys_array << recipe.text}
@@ -24,18 +22,14 @@ class Scraper
     recipe_hash
   end
 
-  def self.create_recipes(hash) #should accept a hash #move to Recipe class?
+  def self.create_recipes(hash)
     hash.each do |name, link|
        Recipe.new(name,link)
     end
   end
 
-  def self.create_link(hash=create_recipes_hash,key) #works! 
-    link = "https://makemeacocktail.com/#{hash.fetch(key)}"
-    link
-  end 
 
-  def self.create_ingredients_array(href) #working
+  def self.create_ingredients_array(href)
     ingredients_array = []
     site = "https://makemeacocktail.com/"+href
     page = Nokogiri::HTML(open(site))
